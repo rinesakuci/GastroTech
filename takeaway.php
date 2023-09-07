@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php
+		session_start();
+		if(isset($_SESSION['exit'])){
+		    unset($_SESSION['exit']);
+		}
+?>
 <!DOCTYPE html>
 <html lang="en"><!-- Basic -->
 <head>
@@ -30,6 +35,9 @@
     <link rel="stylesheet" href="css/responsive.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/custom.css">
+		<link rel="stylesheet" href="css/c-items.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+
 
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -52,8 +60,8 @@
 				<div class="collapse navbar-collapse" id="navbars-rs-food">
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
-						<li class="nav-item"><a class="nav-link" href="takeaway.php">Takeaway</a></li>
-						<li class="nav-item active"><a class="nav-link" href="banquet.php">Banquet</a></li>
+						<li class="nav-item active"><a class="nav-link" href="takeaway.php">Takeaway</a></li>
+						<li class="nav-item"><a class="nav-link" href="banquet.php">Banquet</a></li>
 						<li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
 						<li class="nav-item"><a class="nav-link" href="login.php">Log In</a></li>
 					</ul>
@@ -64,97 +72,69 @@
 	<!-- End header -->
 
 
-	<div style="padding:100px;">
+	<div style="padding:70px;">
 	</div>
 
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div class="content-wrap-1">
+			    <a href="takwaway.php"><i class="fa fa-utensils icon1" style="color: #b13476; border: 2px solid #b13476"></i></a>
+					<a href="takeaway-1.php"><i class="fa fa-cart-plus icon1" style="color: black; border: 2px solid black"></i></a>
+			    <a href="takeaway-2.php"><i class="fas fa-user-circle icon1" style="color: black; border: 2px solid black"></i></a>
+
+    	</div>
+		</div>
+		</div>
+	</div>
+
+<?php
+	require 'db.php';
 
 
-	<section class="second-sect">
+	$exec = mysqli_query($con,"select * from category order by name");
+
+?>
+
+  <!-- Products Section -->
+    <section class="second-sect">
         <div class="main-section-categ">
             <div class="main-section-container">
                 <div class="heading-title text-center">
-                    <h1 style="margin-bottom:0px; font-size: 32px; color: #b13476">Plan Details</h1>
-										<p>Fill up your details and confirm your booking</p>
+                    <h1 style="margin-bottom:0px; font-size: 32px; color: #b13476">Choose the Food Category</h1>
+										<p>Please Select the menu as per your choice.</p>
+				</div>
+				
+                <div class="products wow fadeInRight">
+                    <?php
+					    while($r = mysqli_fetch_array($exec)){
+					            $cid = $r['cid'];
+					           $q = mysqli_query($con,"select count(name) from menu where type=$cid");
+					           while($r1 = mysqli_fetch_array($q)){
+				    ?>
+		                    <div class="item" style="border-radius:10px; border:1px solid #b13476;">
+		                        <div class="imgBx">
+		                            <img style="max-width: 100%; max-height: 100%;" src="<?php echo $r['img']; ?>" />
+		                        </div>
+		                        <div class="cntBx">
+		                            <div class="item-title" style="color : #b13476;"><?php echo $r['name']; ?></div>
+		                            <div class="description">
+		                                <p>Total Items :  <?php echo $r1[0]; ?> </p>
+		                            </div>
+										<div style="padding-top:15px;">
+		                                	<a class="btn btn-lg btn-circle btn-outline-new-white" style="font-size:14px; padding:10px; border-radius:8px;" href="takeaway-1.php?cid=<?php echo $r['cid']; ?>">Order Now</a>
+										</div>
+		                          </div>
+		                    </div>
+                        <?php  } } ?>
                 </div>
-
-              </div>
             </div>
+					</div>
     </section>
 
-    <div style="height: 20%;text-align:center;">
-       <a href="menu.jpg" download><img src="menu.jpg" height="20%" width="90%" alt="Image Not Loaded" /></a>
-    </div>
-    <div class="contact-box">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12">
-						<form id="contactForm" method="post" action="banquet-1.php">
-							<div class="row">
-                                <div class="col-md-12">
-									<span class="field-title" > Select Plan : </span>
-									<div class="form-group">
-										<select class="custom-select d-block form-control" id="n-reason" required data-error="Please Select No. of Slots" name="menu">
-											<option disabled selected>Select Plan *</option>
-											<option value="250">Plan - 1 : 250/- per dish</option>
-											<option value="300">Plan - 2 : 300/- per dish</option>
-											<option value="350">Plan - 3 : 350/- per dish</option>
-											<option value="450">Plan - 4 : 450/- per dish</option>
-											<option value="550">Plan - 5 : 550/- per dish</option>
-										</select>
-										<div class="help-block with-errors"></div>									
-									</div>
-                                </div>
-								<div class="col-md-12">
-									<span class="field-title" > Enter Number Of People </span>
-									<div class="form-group">
-										<input type="number" onchange="calc()" class="form-control" id="b-name" name="b-no" min="50" max="1000" placeholder="Enter Number of people" required data-error="Please Enter Number"> 
-										<div class="help-block with-errors"></div>
-									</div>
-                                </div>
-                                <script>
-                                    function calc(){
-                                        var plan = document.getElementById('n-reason').value;
-                                        var person = document.getElementById('b-name').value;
-                                        
-                                        console.log(plan);
-                                        console.log(person);
-                                        var total = plan * person;
-                                        total.toString().toLocaleString();
-                                        var t = document.getElementById('total').value = total;
-                                    }
-                                </script>
-                                <div class="col-md-12">
-                                    <span class="field-title">Total Food Bill</span>
-                                    <div class="form-group">
-                                        <input type="number" class="form-control" id="total" readonly value="0" />
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="submit-button text-center">
-											<button class="btn btn-lg btn-circle btn-outline-new-white" style="font-size:14px; padding:10px; border-radius:8px;" id="submit" type="submit" name="submit">Banquet Design</button>
-											<div id="msgSubmit" class="h3 text-center hidden"></div>
-										</div>
-                                </div>
-								</div>	
-                                </form>
-                                <div class="text-center" style="margin-top: 2%;">
-    							    <h2 class="text-warning">
-    								    <strong id="showResvered">
-    								    <?php 
-    								        if(isset($_SESSION['er'])){
-                                                echo 'Select Plan & Person No.';
-                                                unset($_SESSION['er']);
-                                            }
-                                         ?>
-                                        </strong>
-    							    </h2>
-    						    </div>
-							</div>
-						</div>
-							<div style="padding:5%;"></div>
-				</div>
-			</div>
+
+		<div style="padding:50px;" >
+		</div>
 
 	<!-- Start Contact info -->
 	<div class="contact-imfo-box">
